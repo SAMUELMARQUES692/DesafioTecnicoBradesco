@@ -1,6 +1,7 @@
 package view;
 
 import database.dao.DirecaoDAO;
+import database.dao.ReplicacaoProcessoDAO;
 import database.model.TB_REPLICACAO_DIRECAO;
 import database.model.TB_REPLICACAO_PROCESSO;
 
@@ -8,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class TabelaReplicacaoDirecaoView extends JFrame {
 
@@ -16,6 +18,7 @@ public class TabelaReplicacaoDirecaoView extends JFrame {
 
     private final Connection conn;
     private final DirecaoDAO dao;
+    private final ReplicacaoProcessoDAO daoProcesso;
 
 
     private JTextField txfId;
@@ -37,6 +40,7 @@ public class TabelaReplicacaoDirecaoView extends JFrame {
     public TabelaReplicacaoDirecaoView(Connection conn) throws SQLException {
         this.conn = conn;
         this.dao = new DirecaoDAO(conn);
+        this.daoProcesso = new ReplicacaoProcessoDAO(conn);
 
         setTitle("Cadastro de Tabelas");
         setSize(760, 460);
@@ -137,6 +141,13 @@ public class TabelaReplicacaoDirecaoView extends JFrame {
         chkHabilitado = new JCheckBox("HABILITADO");
         chkHabilitado.setBounds(10, 405, 140, 25);
         getContentPane().add(chkHabilitado);
+
+        cbProcesso.removeAllItems();;
+        ArrayList<TB_REPLICACAO_PROCESSO> processos = daoProcesso.selectAll();
+        for (TB_REPLICACAO_PROCESSO p : processos) {
+            cbProcesso.addItem(p);
+        }
+
 
         txfId.setEnabled(false);
         cbProcesso.setEnabled(false);
