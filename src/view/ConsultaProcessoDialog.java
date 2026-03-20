@@ -5,8 +5,6 @@ import database.model.TB_REPLICACAO_PROCESSO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ConsultaProcessoDialog extends JDialog {
@@ -18,7 +16,7 @@ public class ConsultaProcessoDialog extends JDialog {
     private TB_REPLICACAO_PROCESSO selecionado;
 
     public ConsultaProcessoDialog(JFrame parent, ReplicacaoProcessoDAO dao) throws Exception {
-        super(parent, "Consulta de Processo");
+        super(parent, "Consulta de Processo", true);
         setSize(700, 400);
         setLocationRelativeTo(parent);
         setResizable(false);
@@ -62,21 +60,19 @@ public class ConsultaProcessoDialog extends JDialog {
             }
 
             TB_REPLICACAO_PROCESSO p = new TB_REPLICACAO_PROCESSO();
-            p.setId(Long.valueOf(Integer.parseInt(table.getValueAt(row, 0).toString())));
-            p.setProcesso(table.getValueAt(row, 1).toString());
-            p.setDescricao(table.getValueAt(row, 2).toString());
+            p.setId(Long.parseLong(table.getValueAt(row, 0).toString()));
+            p.setProcesso(String.valueOf(table.getValueAt(row, 1)));
+            p.setDescricao(String.valueOf(table.getValueAt(row, 2)));
             p.setHabilitado(Boolean.parseBoolean(table.getValueAt(row, 3).toString()));
             selecionado = p;
             dispose();
         });
 
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
                     btnSelecionar.doClick();
                 }
-
             }
         });
     }

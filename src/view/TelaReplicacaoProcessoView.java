@@ -95,12 +95,12 @@ public class TelaReplicacaoProcessoView extends JFrame {
             txfDescricao.setText("");
             chkHabilitado.setSelected(true);
 
-            txfId.setEnabled(true);
             txfProcesso.setEnabled(true);
             txfDescricao.setEnabled(true);
             chkHabilitado.setEnabled(true);
+
             btnSalvar.setEnabled(true);
-            btnExcluir.setEnabled(true);
+            btnExcluir.setEnabled(false);
         });
 
         btnSalvar.addActionListener(e -> {
@@ -167,6 +167,7 @@ public class TelaReplicacaoProcessoView extends JFrame {
                 txfProcesso.setEnabled(false);
                 txfDescricao.setEnabled(false);
                 chkHabilitado.setEnabled(false);
+
                 btnSalvar.setEnabled(false);
                 btnExcluir.setEnabled(false);
 
@@ -177,7 +178,6 @@ public class TelaReplicacaoProcessoView extends JFrame {
         });
 
         btnBuscar.addActionListener(b -> {
-
             try {
                 ConsultaProcessoDialog dlg = new ConsultaProcessoDialog(this, dao);
                 dlg.setVisible(true);
@@ -194,6 +194,7 @@ public class TelaReplicacaoProcessoView extends JFrame {
                 txfProcesso.setEnabled(true);
                 txfDescricao.setEnabled(true);
                 chkHabilitado.setEnabled(true);
+
                 btnSalvar.setEnabled(true);
                 btnExcluir.setEnabled(true);
 
@@ -201,9 +202,6 @@ public class TelaReplicacaoProcessoView extends JFrame {
                 exception.printStackTrace();
                 JOptionPane.showMessageDialog(null,"Erro ao consultar registro: " + exception.getMessage());
             }
-
-
-
         });
 
 
