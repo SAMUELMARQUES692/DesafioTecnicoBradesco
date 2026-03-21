@@ -1,3 +1,4 @@
+import service.ReplicacaoExecutar;
 import view.TabelaReplicacaoDirecaoView;
 import view.TelaReplicacaoProcessoTabelaView;
 import view.TelaReplicacaoProcessoView;
@@ -10,8 +11,8 @@ import java.sql.SQLException;
 
 public class Main extends JFrame {
 
-    static String dbUserName = System.getenv("DATABASE_USERNAME");
-    static String dbPassword = System.getenv("DATABASE_PASSWORD");
+   public static String dbUserName = System.getenv("DATABASE_USERNAME");
+   public static String dbPassword = System.getenv("DATABASE_PASSWORD");
 
     private JDesktopPane desktop;
     private static Connection conn;
@@ -29,11 +30,26 @@ public class Main extends JFrame {
         JMenu menuSistema = new JMenu("Sistema");
 
         JMenuItem itemExecutar = new JMenuItem("Executar Replicação");
-        itemExecutar.addActionListener(e -> {});
+        itemExecutar.addActionListener(e -> {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (!Thread.currentThread().isInterrupted()) {
+                       new ReplicacaoExecutar(conn);
+                        try {
+                            Thread.sleep(60000);
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                }
+            }).start();
+        });
         menuSistema.add(itemExecutar);
 
         JMenuItem itemSair = new JMenuItem("Sair");
-        itemExecutar.addActionListener(e -> {
+        itemSair.addActionListener(e -> {
             if (conn != null) {
                 try {
                     conn.close();
@@ -127,21 +143,46 @@ public class Main extends JFrame {
 
     }
 
-
     public static void main(String[] args) {
 
-        try {
+        // AREAS ESTÃO COMENTADAS PARA NÃO RODAREM APENAS COMO SERVIÇO
 
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/controle", dbUserName, dbPassword);
-            SwingUtilities.invokeLater(() -> new Main().setVisible(true));
+       /* if (args != null && args.length > 0) {
+            if (args[0].equalsIgnoreCase("service=yes")) {
+                try {
+                    conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/controle", dbUserName, dbPassword);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            while (!Thread.currentThread().isInterrupted()) {
+                                new ReplicacaoExecutar(conn);
+                                try {
+                                    Thread.sleep(60000);
+                                } catch (InterruptedException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+                        }
+                    }).start();
 
-        }catch (Exception exception) {
-            exception.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Não foi possivel conectar no banco de dados.");
-            System.exit(0);
-        }
+                }catch (SQLException exception) {
+                    exception.printStackTrace();
+                }
+            }else {*/
+                try {
 
+                    conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/controle", dbUserName, dbPassword);
+                    SwingUtilities.invokeLater(() -> new Main().setVisible(true));
 
-
+                }catch (Exception exception) {
+                    exception.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Não foi possivel conectar no banco de dados.");
+                    System.exit(0);
+                }
+            }
+       }
+        /*else {
+            System.out.println("Configure os paramentros do replicador");
+        }*//*
     }
-}
+}*/
